@@ -90,6 +90,7 @@ DEMO_SRC = \
 
 INCLUDES = \
 	-I. \
+	-I$(shell $(GCC) -print-sysroot)/include/riscv-pk \
 	-I$(RISCV)/include/spike \
 	-I./arch \
 	-I./conf \
