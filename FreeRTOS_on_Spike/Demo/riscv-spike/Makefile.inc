@@ -6,11 +6,12 @@ RISCV_LIB  ?= elf
 TARGET=riscv${RISCV_XLEN}-unknown-${RISCV_LIB}
 #-----------------------------------------------------------
 GCC		= $(TARGET)-gcc
+GPP		= $(TARGET)-g++
 OBJCOPY	= $(TARGET)-objcopy
 OBJDUMP	= $(TARGET)-objdump
 AR		= $(TARGET)-ar
 RANLIB	= $(TARGET)-ranlib
-CCPATH	= /home/firmware/Padmarao/riscv_23oct17/riscv
+#CCPATH	= /home/firmware/Padmarao/riscv_23oct17/riscv
 
 PROG	= riscv-spike
 CRT0	= arch/boot.S

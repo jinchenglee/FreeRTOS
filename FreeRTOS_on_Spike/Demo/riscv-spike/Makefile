@@ -59,7 +59,7 @@ include ./Makefile.inc
 # Root of RISC-V tools installation. Note that we expect to find the spike
 # simulator header files here under $(RISCV)/include/spike .
 #RISCV ?= /opt/riscv
-RISCV ?= /home/firmware/Padmarao/riscv_23oct17/riscv
+#RISCV ?= /home/firmware/Padmarao/riscv_23oct17/riscv
 
 FREERTOS_SRC = \
 	$(FREERTOS_SOURCE_DIR)/croutine.c \
@@ -86,7 +86,7 @@ PORT_ASM = $(FREERTOS_SOURCE_DIR)/portable/GCC/RISCV/portasm.S
 DEMO_SRC = \
 	arch/syscalls.c \
 	arch/clib.c \
-	main.c
+	checkTimer.c
 
 INCLUDES = \
 	-I. \
@@ -97,7 +97,8 @@ INCLUDES = \
 	-I./include \
 	-I$(FREERTOS_SOURCE_DIR)/include \
 	-I../Common/include \
-	-I$(FREERTOS_SOURCE_DIR)/portable/GCC/RISCV
+	-I$(FREERTOS_SOURCE_DIR)/portable/GCC/RISCV \
+	-I.. 
 
 CFLAGS = \
 	$(WARNINGS) $(INCLUDES) \
@@ -122,6 +123,10 @@ LIBS	 = -L$(CCPATH)/lib/gcc/$(TARGET)/$(GCCVER) \
 		   -L$(CCPATH)/$(TARGET)/lib \
 		   -lc -lgcc
 
+%.o: %.cpp
+	@echo "    CC $<"
+	@$(GPP) $(CFLAGS) -o $@ $<
+
 %.o: %.c
 	@echo "    CC $<"
 	@$(GCC) -c $(CFLAGS) -o $@ $<
@@ -134,7 +139,8 @@ all: $(PROG).elf
 
 $(PROG).elf  : $(OBJS) Makefile 
 	@echo Linking....
-	@$(GCC) -o $@ $(LDFLAGS) $(OBJS) $(LIBS)
+	#@$(GPP) -o $@ $(LDFLAGS) $(OBJS) $(LIBS) -mcmodel=medany -I$(INCLUDES) main.cpp
+	@$(GPP) -o $@ $(LDFLAGS) $(OBJS) $(LIBS) -mcmodel=medany
 	@$(OBJDUMP) -S $(PROG).elf > $(PROG).asm	
 	@echo Completed $@
 
