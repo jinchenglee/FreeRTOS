@@ -73,12 +73,6 @@
 /* Kernel includes. */
 #include "timers.h"
 
-/*-----------------------------------------------------------*/
-/*
- * The check timer callback function, as described at the top of this file.
- */
-static void prvCheckTimerCallback( TimerHandle_t xTimer );
-
 /*
  * FreeRTOS hook for when a stackoverflow occurs, enable in FreeRTOSConfig.
  */

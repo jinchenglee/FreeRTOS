@@ -88,6 +88,8 @@ DEMO_SRC = \
 	arch/clib.c \
 	checkTimer.c
 
+CPP_SRC = main.cpp
+
 INCLUDES = \
 	-I. \
 	-I$(shell $(GCC) -print-sysroot)/include/riscv-pk \
@@ -116,7 +118,8 @@ PORT_OBJ = $(PORT_SRC:.c=.o)
 DEMO_OBJ = $(DEMO_SRC:.c=.o)
 PORT_ASM_OBJ = $(PORT_ASM:.S=.o)
 CRT0_OBJ = $(CRT0:.S=.o)
-OBJS = $(CRT0_OBJ) $(PORT_ASM_OBJ) $(PORT_OBJ) $(RTOS_OBJ) $(DEMO_OBJ) $(APP_OBJ)
+CPP_OBJ = $(CPP_SRC:.cpp=.o)
+OBJS = $(CPP_OBJ) $(CRT0_OBJ) $(PORT_ASM_OBJ) $(PORT_OBJ) $(RTOS_OBJ) $(DEMO_OBJ) $(APP_OBJ)
 
 LDFLAGS	 = -T arch/link.ld -nostartfiles -static -nostdlib
 LIBS	 = -L$(CCPATH)/lib/gcc/$(TARGET)/$(GCCVER) \
@@ -125,7 +128,7 @@ LIBS	 = -L$(CCPATH)/lib/gcc/$(TARGET)/$(GCCVER) \
 
 %.o: %.cpp
 	@echo "    CC $<"
-	@$(GPP) $(CFLAGS) -o $@ $<
+	@$(GPP) -c $(CFLAGS) -o $@ $<
 
 %.o: %.c
 	@echo "    CC $<"
@@ -139,8 +142,7 @@ all: $(PROG).elf
 
 $(PROG).elf  : $(OBJS) Makefile 
 	@echo Linking....
-	#@$(GPP) -o $@ $(LDFLAGS) $(OBJS) $(LIBS) -mcmodel=medany -I$(INCLUDES) main.cpp
-	@$(GPP) -o $@ $(LDFLAGS) $(OBJS) $(LIBS) -mcmodel=medany
+	@$(GCC) -o $@ $(LDFLAGS) $(OBJS) $(LIBS) -mcmodel=medany
 	@$(OBJDUMP) -S $(PROG).elf > $(PROG).asm	
 	@echo Completed $@
 
@@ -154,7 +156,7 @@ force_true:
 	@true
 
 #-------------------------------------------------------------
-sim:
-	spike $(PROG).elf
+sim: $(PROG).elf
+	spike $<
 
 

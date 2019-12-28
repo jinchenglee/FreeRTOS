@@ -117,6 +117,9 @@ extern "C" {
 #include "clib.h"
 
 
+#include "checkTimer.h"
+
+
 /* The period after which the check timer will expire provided no errors have
 been reported by any of the standard demo tasks.  ms are converted to the
 equivalent in ticks using the portTICK_PERIOD_MS constant. */
@@ -203,45 +206,45 @@ int main( void )
 extern "C" {
 #endif
 
-//<<JC>> /* See the description at the top of this file. */
-//<<JC>> static void prvCheckTimerCallback(__attribute__ ((unused)) TimerHandle_t xTimer )
-//<<JC>> {
-//<<JC>> unsigned long ulErrorFound = pdFALSE;
-//<<JC>> 
-//<<JC>>     /* Check all the demo and test tasks to ensure that they are all still
-//<<JC>>     running, and that none have detected an error. */
-//<<JC>> 
-//<<JC>>     if( xAreBlockTimeTestTasksStillRunning() != pdPASS )
-//<<JC>>     {
-//<<JC>>         printf("Error in block time test tasks \r\n");
-//<<JC>>         ulErrorFound |= ( 0x01UL << 1UL );
-//<<JC>>     }
-//<<JC>> 
-//<<JC>>     if( xAreCountingSemaphoreTasksStillRunning() != pdPASS )
-//<<JC>>     {
-//<<JC>>         printf("Error in counting semaphore tasks \r\n");
-//<<JC>>         ulErrorFound |= ( 0x01UL << 2UL );
-//<<JC>>     }
-//<<JC>> 
-//<<JC>>     if( xAreRecursiveMutexTasksStillRunning() != pdPASS )
-//<<JC>>     {
-//<<JC>>         printf("Error in recursive mutex tasks \r\n");
-//<<JC>>         ulErrorFound |= ( 0x01UL << 3UL );
-//<<JC>>     }
-//<<JC>> 
-//<<JC>>     if( ulErrorFound != pdFALSE )
-//<<JC>>     {
-//<<JC>>         __asm volatile("li t6, 0xbeefdead");
-//<<JC>>         printf("Error found! \r\n");
-//<<JC>>     }else{
-//<<JC>>         __asm volatile("li t6, 0xdeadbeef");
-//<<JC>>         printf("PASS! \r\n");
-//<<JC>>     }
-//<<JC>> 
-//<<JC>>     /* Stop scheduler */
-//<<JC>>     //  vTaskEndScheduler();
-//<<JC>> }
-//<<JC>> /*-----------------------------------------------------------*/
+/* See the description at the top of this file. */
+static void prvCheckTimerCallback(__attribute__ ((unused)) TimerHandle_t xTimer )
+{
+unsigned long ulErrorFound = pdFALSE;
+
+    /* Check all the demo and test tasks to ensure that they are all still
+    running, and that none have detected an error. */
+
+    if( xAreBlockTimeTestTasksStillRunning() != pdPASS )
+    {
+        printf("Error in block time test tasks \r\n");
+        ulErrorFound |= ( 0x01UL << 1UL );
+    }
+
+    if( xAreCountingSemaphoreTasksStillRunning() != pdPASS )
+    {
+        printf("Error in counting semaphore tasks \r\n");
+        ulErrorFound |= ( 0x01UL << 2UL );
+    }
+
+    if( xAreRecursiveMutexTasksStillRunning() != pdPASS )
+    {
+        printf("Error in recursive mutex tasks \r\n");
+        ulErrorFound |= ( 0x01UL << 3UL );
+    }
+
+    if( ulErrorFound != pdFALSE )
+    {
+        __asm volatile("li t6, 0xbeefdead");
+        printf("Error found! \r\n");
+    }else{
+        __asm volatile("li t6, 0xdeadbeef");
+        printf("PASS! \r\n");
+    }
+
+    /* Stop scheduler */
+    //  vTaskEndScheduler();
+}
+/*-----------------------------------------------------------*/
 
 //<<JC>> void vApplicationMallocFailedHook( void )
 //<<JC>> {
@@ -292,7 +295,7 @@ static void vUartTestTask1( void *pvParameters )
     for( ;; )
     {
         printf("Task - 1\r\n" );
-            vTaskDelay(100);
+            vTaskDelay(250);
     }
 }
 
@@ -302,7 +305,7 @@ static void vUartTestTask2( void *pvParameters )
     for( ;; )
     {
         printf("Task - 2\r\n" );
-            vTaskDelay(150);
+            vTaskDelay(500);
     }
 }
 

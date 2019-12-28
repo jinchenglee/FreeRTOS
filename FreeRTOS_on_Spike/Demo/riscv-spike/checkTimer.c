@@ -103,48 +103,6 @@
 #include "arch/clib.h"
 
 
-/*
- * The check timer callback function, as described at the top of this file.
- */
-static void prvCheckTimerCallback(__attribute__ ((unused)) TimerHandle_t xTimer )
-{
-unsigned long ulErrorFound = pdFALSE;
-
-	/* Check all the demo and test tasks to ensure that they are all still
-	running, and that none have detected an error. */
-
-	if( xAreBlockTimeTestTasksStillRunning() != pdPASS )
-	{
-		printf("Error in block time test tasks \r\n");
-		ulErrorFound |= ( 0x01UL << 1UL );
-	}
-
-	if( xAreCountingSemaphoreTasksStillRunning() != pdPASS )
-	{
-		printf("Error in counting semaphore tasks \r\n");
-		ulErrorFound |= ( 0x01UL << 2UL );
-	}
-
-	if( xAreRecursiveMutexTasksStillRunning() != pdPASS )
-	{
-		printf("Error in recursive mutex tasks \r\n");
-		ulErrorFound |= ( 0x01UL << 3UL );
-	}
-
-	if( ulErrorFound != pdFALSE )
-	{
-		__asm volatile("li t6, 0xbeefdead");
-		printf("Error found! \r\n");
-	}else{
-		__asm volatile("li t6, 0xdeadbeef");
-		printf("PASS! \r\n");
-	}
-
-	/* Stop scheduler */
-    //	vTaskEndScheduler();
-}
-/*-----------------------------------------------------------*/
-
 void vApplicationStackOverflowHook( TaskHandle_t pxTask, char *pcTaskName )
 {
     ( void ) pcTaskName;
