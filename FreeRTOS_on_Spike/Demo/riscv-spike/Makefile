@@ -126,9 +126,13 @@ LIBS	 = -L$(CCPATH)/lib/gcc/$(TARGET)/$(GCCVER) \
 		   -L$(CCPATH)/$(TARGET)/lib \
 		   -lc -lgcc
 
+# -fno-rtti is required to avoid linking errors like this:
+#
+#	"undefined reference to `vtable for __cxxabiv1::__si_class_type_info'"
+#
 %.o: %.cpp
 	@echo "    CC $<"
-	@$(GPP) -c $(CFLAGS) -o $@ $<
+	@$(GPP) -c $(CFLAGS) -fno-rtti -o $@ $<
 
 %.o: %.c
 	@echo "    CC $<"

@@ -1,10 +1,18 @@
-#ifndef __THREADBASE_INC
-#define __THREADBASE_INC
+#ifndef __THREADEXAMPLE_INC
+#define __THREADEXAMPLE_INC
 
 #include "FreeRTOS.h"
 #include "task.h"
 
-#include "threadBase.hpp"
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include "clib.h"	// For printf().
+#ifdef __cplusplus
+}
+#endif
+
+#include "alg/common/threadBase.hpp"
 
 namespace alg
 {
@@ -16,8 +24,8 @@ public:
                 UBaseType_t _priority,
                 const char* _name = "",
 
-                uint32_t _ticks
-              ) : threadBase{_stackDepth, _priority, _name}, ticks {_ticks}
+                uint32_t _ticks = 150
+              ) : threadBase{_stackDepth, _priority, _name}, ticks {_ticks}, name {_name}
     {
     }
 
@@ -25,14 +33,15 @@ public:
     {
         while(1)
         {
-            printf("Task - threadTask()\r\n");
-            vTaskDelay(100);
+            printf("%s\r\n", name);
+            vTaskDelay(ticks);
         }
     }
 
 private:
 
     uint32_t ticks;
+    const char* name;
 
 }; // class threadExample
 } // namespace alg

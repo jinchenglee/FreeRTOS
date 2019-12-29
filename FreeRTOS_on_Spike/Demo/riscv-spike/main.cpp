@@ -158,6 +158,9 @@ static void vUartTestTask2( void *pvParameters );
 }
 #endif
 
+// See https://stackoverflow.com/questions/920500/what-is-the-purpose-of-cxa-pure-virtual
+extern "C" void __cxa_pure_virtual() { while (1); }
+
 int main( void )
 {
 
@@ -191,6 +194,10 @@ int main( void )
         xTimerStart( xCheckTimer, mainDONT_BLOCK );
     }
 
+    // C++ version of tasks creation
+    alg::threadExample cxxThread1{128, uartPRIMARY_PRIORITY, "cxxThread1", 500};
+
+    // C version of tasks creation.
     xTaskCreate( vUartTestTask1, "UArt1", 1000, NULL, uartPRIMARY_PRIORITY, NULL );
     xTaskCreate( vUartTestTask2, "UArt2", 1000, NULL, uartPRIMARY_PRIORITY, NULL );
 
@@ -295,7 +302,7 @@ static void vUartTestTask1( void *pvParameters )
     for( ;; )
     {
         printf("Task - 1\r\n" );
-            vTaskDelay(250);
+            vTaskDelay(700);
     }
 }
 
@@ -305,7 +312,7 @@ static void vUartTestTask2( void *pvParameters )
     for( ;; )
     {
         printf("Task - 2\r\n" );
-            vTaskDelay(500);
+            vTaskDelay(1000);
     }
 }
 
